@@ -119,6 +119,8 @@ char *shv_read_line(void)
 
 char **shv_split_line(char *line)
 {
+    // TODO: Make sure we can read quoted strings as one argument.
+    // For example git commit -m 'this is one argument'
     int bufsize = SHV_TOK_BUFSIZE, position = 0;
     char **tokens = malloc(bufsize * sizeof(char*));
     char *token;
