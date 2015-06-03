@@ -3,7 +3,6 @@
 
     [THE SHiV SHELL]
 
-    * Author: Victor Köhler
     * Version: 0.0.1
 
    * Compilation: gcc -o shv shv.c
@@ -11,7 +10,6 @@
    * With ncurses: -lncurses
 
 *************************************/
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -178,7 +176,6 @@ int shv_launch(char **args)
 }
 
 
-
 int shv_execute(char **args)
 {
     int i;
@@ -194,7 +191,5 @@ int shv_execute(char **args)
     }
     return shv_launch(args);
 }
-
-
 
 
