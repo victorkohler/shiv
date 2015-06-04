@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <readline/history.h>
@@ -131,10 +132,42 @@ char **shv_split_line(char *line)
     }
 
     token = strtok(line, SHV_TOK_DELIM);
+    
+    bool start_string = false;
+    bool end_string = false;
+    char string[1024] = {0,};
 
     while(token != NULL){
-        tokens[position] = token;
-        position ++;    
+
+        int i;
+        for (i = 0; i < strlen(token); i++){
+
+            //TODO: Add support for single quotes
+            if(token[i] == '"' && start_string == false){
+                start_string = true;
+            }else if(token[i] == '"' && start_string == true){
+                end_string = true;
+                start_string = false;
+            }
+        }
+
+        //TODO: Add space for all string tokens except for the last one.
+        if (start_string == true){
+            strcat(string, token);
+            int l = strlen(string);
+            string[l] = ' ';
+            printf("TOKEN: %s\n", string);
+        }else if (end_string == true){
+            strcat(string, token);
+            tokens[position] = string;
+            end_string = false;
+            position ++;    
+        }else{
+            tokens[position] = token;
+            position ++;    
+        }
+
+        //tokens[position] = token;       
 
         if(position >= bufsize){
             bufsize += SHV_TOK_BUFSIZE;
@@ -147,7 +180,9 @@ char **shv_split_line(char *line)
         }
         token = strtok(NULL, SHV_TOK_DELIM);
     }
+
     tokens[position] = NULL;
+   
     return tokens;
 }
 
@@ -158,7 +193,9 @@ int shv_launch(char **args)
     int status;
 
     pid = fork();
-    
+ 
+    printf("ARGS[1]: %s\n", args[1]);
+
     if (pid == 0){
         //child process
         if(execvp(args[0], args) == -1){
