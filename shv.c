@@ -143,9 +143,9 @@ char **shv_split_line(char *line)
         for (i = 0; i < strlen(token); i++){
 
             //TODO: Add support for single quotes
-            if(token[i] == '"' && start_string == false){
+            if((token[i] == '"' || token[i] == '\'') && start_string == false){
                 start_string = true;
-            }else if(token[i] == '"' && start_string == true){
+            }else if((token[i] == '"' || token[i] == '\'') && start_string == true){
                 end_string = true;
                 start_string = false;
             }
