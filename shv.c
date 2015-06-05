@@ -210,7 +210,8 @@ int shv_execute(char **args)
                 strcpy(tempchar + c, tempchar + c + 1);   
             }
         }
-   
+  
+
         args[count] = tempchar;
         count ++;
         *temp++;
