@@ -156,7 +156,6 @@ char **shv_split_line(char *line)
             strcat(string, token);
             int l = strlen(string);
             string[l] = ' ';
-            printf("TOKEN: %s\n", string);
         }else if (end_string == true){
             strcat(string, token);
             tokens[position] = string;
@@ -197,7 +196,6 @@ int shv_launch(char **args)
 
     if (pid == 0){
         //child process
-        printf("PID = 0\n");
         if(execvp(args[0], args) == -1){
             perror("shv");    
         }
