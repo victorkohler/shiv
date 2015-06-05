@@ -10,7 +10,10 @@
    * With ncurses: -lncurses
 
    *TODO
-        - Remove quotes from strings before pushing args.
+        [x] Remove quotes from strings before pushing args.
+        [ ] Remove single quotes from strings before pushing args.
+        [ ] Break string control into function (s).
+        [ ]
 
 
 *************************************/
@@ -94,8 +97,6 @@ char *shv_read_line(void)
 
 char **shv_split_line(char *line)
 {
-    // TODO: Make sure we can read quoted strings as one argument.
-    // For example git commit -m 'this is one argument'
     int bufsize = SHV_TOK_BUFSIZE, position = 0;
     char **tokens = malloc(bufsize * sizeof(char*));
     char *token;
@@ -189,7 +190,10 @@ int shv_execute(char **args)
 {
     int i;
     int count = 0;
-    char **temp = args;
+    
+    //char **temp = args;
+    char **temp = malloc(1024 * sizeof(char));
+    temp = args;
 
 
 
@@ -199,12 +203,13 @@ int shv_execute(char **args)
     }
    
 
-    //REMIOVE QUOTES FROM STRING
+    //REMOVE QUOTES FROM STRING
     while(*temp != NULL){
         
         unsigned long c;
         char *tempchar = *temp;
         
+        //TODO: Sanitize for single quotes
         for (c = 0; c < strlen(tempchar); c++){
             if (tempchar[c] == '"'){
                 strcpy(tempchar + c, tempchar + c + 1);   
@@ -216,6 +221,8 @@ int shv_execute(char **args)
         count ++;
         *temp++;
     }
+
+    free(*temp);
 
     //CHECK IF BUILT IN FUNCTION  
     for (i = 0; i < shv_num_builtins(); i++){
