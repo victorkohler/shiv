@@ -67,8 +67,6 @@ void shv_loop(void)
         free(line);    
         free(args);
     } while (status);
-
-
 }
 
 
@@ -191,15 +189,15 @@ char **shv_split_line(char *line)
 
 int shv_launch(char **args)
 {
-    pid_t pid, wpid;
+    //pid_t pid, wpid;
+    pid_t pid;
     int status;
 
     pid = fork();
- 
-    printf("ARGS[1]: %s\n", args[1]);
 
     if (pid == 0){
         //child process
+        printf("PID = 0\n");
         if(execvp(args[0], args) == -1){
             perror("shv");    
         }
@@ -210,7 +208,7 @@ int shv_launch(char **args)
     }else{
         //parent process
         do{
-            wpid = waitpid(pid, &status, WUNTRACED);
+            waitpid(pid, &status, WUNTRACED);
         }while(!WIFEXITED(status) && !WIFSIGNALED(status));
     }
     return 1;
@@ -220,11 +218,35 @@ int shv_launch(char **args)
 int shv_execute(char **args)
 {
     int i;
+    int count = 0;
+    char **temp = args;
+
+
+
     if (args[0] == NULL){
         //empty command
         return 1;
     }
+   
 
+    //REMIOVE QUOTES FROM STRING
+    while(*temp != NULL){
+        
+        unsigned long c;
+        char *tempchar = *temp;
+        
+        for (c = 0; c < strlen(tempchar); c++){
+            if (tempchar[c] == '"'){
+                strcpy(tempchar + c, tempchar + c + 1);   
+            }
+        }
+   
+        args[count] = tempchar;
+        count ++;
+        *temp++;
+    }
+
+    //CHECK IF BUILT IN FUNCTION  
     for (i = 0; i < shv_num_builtins(); i++){
         if (strcmp(args[0], builtin_str[i]) == 0){
             return (*builtin_func[i])(args);   
