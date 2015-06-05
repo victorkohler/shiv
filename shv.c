@@ -90,33 +90,6 @@ char *shv_read_line(void)
 
     free(buffer);
 
-    /* Manual implementation of reading line to buffer
-    *************************************************
-    int c;
-    int position = 0;
-
-    while (1){
-        //Read a character
-        c = getchar();
-
-        if (c == EOF || c == '\n'){
-            buffer[position] = '\0';
-            return buffer;    
-        }else{
-            buffer[position] = c;
-        }
-        position ++;
-
-        //If we exceed buffer, reallocate!
-        if (position >= bufsize){
-            bufsize += SHV_RL_BUFSIZE;
-            buffer = realloc(buffer, bufsize);
-            if (!buffer){
-                fprintf(stderr, "shv: memory reallocation error\n");
-                exit(EXIT_FAILURE);    
-            }    
-        }
-    }*/
 }
 
 
