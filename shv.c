@@ -234,7 +234,7 @@ int shv_execute(char **args)
         char *tempchar = *temp;
         
         for (c = 0; c < strlen(tempchar); c++){
-            if (tempchar[c] == '"'){
+            if (tempchar[c] == '"' || tempchar[c] == '\''){
                 strcpy(tempchar + c, tempchar + c + 1);   
             }
         }
