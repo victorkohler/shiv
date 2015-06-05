@@ -9,6 +9,10 @@
    * With readline: -lreadline
    * With ncurses: -lncurses
 
+   *TODO
+        - Remove quotes from strings before pushing args.
+
+
 *************************************/
 
 #include <stdio.h>
@@ -150,7 +154,6 @@ char **shv_split_line(char *line)
             }
         }
 
-        //TODO: Add space for all string tokens except for the last one.
         if (start_string == true){
             strcat(string, token);
             int l = strlen(string);
