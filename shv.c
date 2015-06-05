@@ -191,9 +191,9 @@ int shv_execute(char **args)
     int i;
     int count = 0;
     
-    //char **temp = args;
-    char **temp = malloc(1024 * sizeof(char));
-    temp = args;
+    char **temp = args;
+    //char **temp = malloc(1024 * sizeof(char));
+    //temp = args;
 
 
 
@@ -221,8 +221,6 @@ int shv_execute(char **args)
         count ++;
         *temp++;
     }
-
-    free(*temp);
 
     //CHECK IF BUILT IN FUNCTION  
     for (i = 0; i < shv_num_builtins(); i++){
