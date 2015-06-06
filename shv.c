@@ -13,7 +13,6 @@
         [x] Remove quotes from strings before pushing args.
         [ ] Remove single quotes from strings before pushing args.
         [ ] Break string control into function (s).
-        [ ]
 
 
 *************************************/
