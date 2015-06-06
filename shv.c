@@ -116,9 +116,9 @@ char **shv_split_line(char *line)
         int i;
         for (i = 0; i < strlen(token); i++){
 
-            if((token[i] == '"' || token[i] == '\'') && start_string == false){
+            if(token[i] == '"' && start_string == false){
                 start_string = true;
-            }else if((token[i] == '"' || token[i] == '\'') && start_string == true){
+            }else if(token[i] == '"' && start_string == true){
                 end_string = true;
                 start_string = false;
             }
