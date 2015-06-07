@@ -11,7 +11,7 @@
 
    *TODO
         [x] Remove quotes from strings before pushing args.
-        [ ] Remove single quotes from strings before pushing args.
+        [x] Remove single quotes from strings before pushing args.
         [ ] Break string control into function (s).
 
 
@@ -33,6 +33,7 @@
 #define SHV_TOK_DELIM " \t\r\n\a"
 
 
+const int single_quote_ascii = 39;
 /*
 SHiV Core function declarations
 */
@@ -100,6 +101,7 @@ char **shv_split_line(char *line)
     char **tokens = malloc(bufsize * sizeof(char*));
     char *token;
 
+
     if(!tokens){
         fprintf(stderr, "shv: memory allocation error\n");
         exit(EXIT_FAILURE);
@@ -116,9 +118,9 @@ char **shv_split_line(char *line)
         int i;
         for (i = 0; i < strlen(token); i++){
 
-            if(token[i] == '"' && start_string == false){
+            if((token[i] == '"' || token[i] == single_quote_ascii) && start_string == false){
                 start_string = true;
-            }else if(token[i] == '"' && start_string == true){
+            }else if((token[i] == '"' || token[i] == single_quote_ascii) && start_string == true){
                 end_string = true;
                 start_string = false;
             }
@@ -132,13 +134,17 @@ char **shv_split_line(char *line)
             strcat(string, token);
             tokens[position] = string;
             end_string = false;
+            printf("TOKEN: %s\n", tokens[position]);
             position ++;    
         }else{
             tokens[position] = token;
+            printf("TOKEN: %s\n", tokens[position]);
             position ++;    
         }
 
         //tokens[position] = token;       
+
+
 
         if(position >= bufsize){
             bufsize += SHV_TOK_BUFSIZE;
@@ -210,12 +216,11 @@ int shv_execute(char **args)
         
         //TODO: Sanitize for single quotes
         for (c = 0; c < strlen(tempchar); c++){
-            if (tempchar[c] == '"'){
+            if (tempchar[c] == '"' || tempchar[c] == single_quote_ascii){
                 strcpy(tempchar + c, tempchar + c + 1);   
             }
         }
   
-
         args[count] = tempchar;
         count ++;
         *temp++;
