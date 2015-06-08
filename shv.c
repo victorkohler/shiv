@@ -5,16 +5,6 @@
 
     * Version: 0.0.1
 
-   * Compilation: gcc -o shv shv.c
-   * With readline: -lreadline
-   * With ncurses: -lncurses
-
-   *TODO
-        [x] Remove quotes from strings before pushing args.
-        [x] Remove single quotes from strings before pushing args.
-        [ ] Break string control into function (s).
-
-
 *************************************/
 
 #include <stdio.h>
@@ -25,15 +15,16 @@
 #include <unistd.h>
 #include <readline/history.h>
 #include <readline/readline.h>
-#include"builtin.h"
 
 #define SHV_VERSION "0.0.1"
 #define SHV_RL_BUFSIZE 1024
 #define SHV_TOK_BUFSIZE 64
 #define SHV_TOK_DELIM " \t\r\n\a"
+#define SINGLE_QUOTE_ASCII 39
 
+#include"builtin.h"
+#include"helper.h"
 
-const int single_quote_ascii = 39;
 /*
 SHiV Core function declarations
 */
@@ -117,10 +108,9 @@ char **shv_split_line(char *line)
 
         int i;
         for (i = 0; i < strlen(token); i++){
-
-            if((token[i] == '"' || token[i] == single_quote_ascii) && start_string == false){
+            if((token[i] == '"' || token[i] == SINGLE_QUOTE_ASCII) && start_string == false){
                 start_string = true;
-            }else if((token[i] == '"' || token[i] == single_quote_ascii) && start_string == true){
+            }else if((token[i] == '"' || token[i] == SINGLE_QUOTE_ASCII) && start_string == true){
                 end_string = true;
                 start_string = false;
             }
@@ -134,17 +124,11 @@ char **shv_split_line(char *line)
             strcat(string, token);
             tokens[position] = string;
             end_string = false;
-            printf("TOKEN: %s\n", tokens[position]);
             position ++;    
         }else{
             tokens[position] = token;
-            printf("TOKEN: %s\n", tokens[position]);
             position ++;    
         }
-
-        //tokens[position] = token;       
-
-
 
         if(position >= bufsize){
             bufsize += SHV_TOK_BUFSIZE;
@@ -157,9 +141,8 @@ char **shv_split_line(char *line)
         }
         token = strtok(NULL, SHV_TOK_DELIM);
     }
-
     tokens[position] = NULL;
-   
+    
     return tokens;
 }
 
@@ -186,6 +169,11 @@ int shv_launch(char **args)
         do{
             waitpid(pid, &status, WUNTRACED);
         }while(!WIFEXITED(status) && !WIFSIGNALED(status));
+        
+        if(WCOREDUMP(status)){
+            printf("\nCore Dumped Error. Code %d\n", status);   
+        }
+
     }
     return 1;
 }
@@ -200,10 +188,7 @@ int shv_execute(char **args)
     //char **temp = malloc(1024 * sizeof(char));
     //temp = args;
 
-
-
     if (args[0] == NULL){
-        //empty command
         return 1;
     }
    
@@ -211,16 +196,8 @@ int shv_execute(char **args)
     //REMOVE QUOTES FROM STRING
     while(*temp != NULL){
         
-        unsigned long c;
         char *tempchar = *temp;
-        
-        //TODO: Sanitize for single quotes
-        for (c = 0; c < strlen(tempchar); c++){
-            if (tempchar[c] == '"' || tempchar[c] == single_quote_ascii){
-                strcpy(tempchar + c, tempchar + c + 1);   
-            }
-        }
-  
+        tempchar = sanitize_quotes(tempchar);
         args[count] = tempchar;
         count ++;
         *temp++;
