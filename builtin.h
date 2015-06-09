@@ -80,7 +80,7 @@ int shv_path(char **args)
 
 int shv_exit(char **args)
 {
-    write_history("shv_history");
+    write_history(SHV_HISTORY);
     return 0;    
 }
 

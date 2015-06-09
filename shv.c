@@ -21,6 +21,7 @@
 #define SHV_TOK_BUFSIZE 64
 #define SHV_TOK_DELIM " \t\r\n\a"
 #define SINGLE_QUOTE_ASCII 39
+#define SHV_HISTORY "/etc/shv_history"
 
 #include"builtin.h"
 #include"helper.h"
@@ -51,7 +52,7 @@ void shv_loop(void)
     char **args;
     int status;
 
-    read_history("shv_history");
+    read_history(SHV_HISTORY);
 
     do{
         line = shv_read_line();
