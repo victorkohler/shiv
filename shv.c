@@ -58,7 +58,6 @@ void shv_loop(void)
         line = shv_read_line();
         args = shv_split_line(line);
         status = shv_execute(args);
-
         free(line);    
         free(args);
     } while (status);
@@ -67,7 +66,6 @@ void shv_loop(void)
 
 char *shv_read_line(void)
 {
-
     int bufsize = SHV_RL_BUFSIZE;
     char *buffer = malloc(sizeof(char) * bufsize);
 
@@ -76,7 +74,18 @@ char *shv_read_line(void)
         exit(EXIT_FAILURE);
     }
 
-    while ((buffer = readline("[shv]-$ ")) != NULL){
+    //TODO: FIX THIS SHIT!!!!
+
+    char prompt[80];
+    char *path = Get_current_path();
+    char logo[] = "[";
+
+    strcpy(prompt, logo);  
+    strcat(prompt, path);
+    strcat(prompt, "]-$ ");
+    free(path);
+    
+    while ((buffer = readline(prompt)) != NULL){
         if(buffer[0] != 0){
             add_history(buffer);
             return buffer;
@@ -196,7 +205,6 @@ int shv_execute(char **args)
 
     //REMOVE QUOTES FROM STRING
     while(*temp != NULL){
-        
         char *tempchar = *temp;
         tempchar = sanitize_quotes(tempchar);
         args[count] = tempchar;

@@ -1,0 +1,5 @@
+SHIV
+
+A small experimental shell. It executes commands, launches
+applications and keeps track of your history. It can even 
+move into a directory or two.
